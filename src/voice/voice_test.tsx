@@ -8,11 +8,6 @@ import {
   LogBox
 } from 'react-native';
 
-//Image code
-import * as ImagePicker from 'react-native-image-picker';
-/* toggle includeExtra */
-const includeExtra = true;
-
 //Log ignore warning
 LogBox.ignoreLogs(['new NativeEventEmitter']); //Ignore log notification by message
 
