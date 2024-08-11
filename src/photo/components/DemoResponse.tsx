@@ -5,7 +5,7 @@ export function DemoResponse({children}: React.PropsWithChildren<{}>) {
   if (children == null) {
     return null;
   }
-
+  console.log(children);
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.text}>{JSON.stringify(children, null, 2)}</Text>

@@ -7,7 +7,7 @@ import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import SignUp from './auth_signup_password';
 import SignIn from './auth_signin_password';
 
-import Notebook from '../notebook';
+import Notebook from '../notebook/notebook';
 
 function Login() {
   const [initializing, setInitializing] = useState(true);
@@ -69,7 +69,7 @@ function Login() {
         title="Logout"
         onPress={() => Logout().then(() => console.log('Signed out!'))}
       />
-      <Notebook />
+      <Notebook notebook_id='1' user_id={user.email} />
     </View>
   );
 }

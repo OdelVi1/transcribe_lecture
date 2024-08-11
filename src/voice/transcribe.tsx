@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { NativeEventEmitter, DeviceEventEmitter, LogBox, StyleSheet, Text, View, ScrollView } from 'react-native';
+import {TranscribedText} from './transcribed_text.tsx';
 
 const eventEmitter = new NativeEventEmitter(DeviceEventEmitter);
 
@@ -12,7 +13,10 @@ import Voice, {
   SpeechErrorEvent,
 } from '@react-native-voice/voice';
 
-type Props = {};
+type Props = {
+  notebook_id: string;
+  user_id: string;
+};
 
 type State = {
   recognized: string;
@@ -23,6 +27,8 @@ type State = {
   previousText: string;
   partialResults: string[];
   stopped: boolean;
+  texts: TranscribedText[];
+  new_segment_time: string;
 };
 
 
@@ -41,7 +47,9 @@ class Transcribe extends Component<Props, State> {
           results: '',
           partialResults: [],
           previousText: '',
-          stopped: true
+          stopped: true,
+          texts: [],
+          new_segment_time: ''
         };
         Voice.onSpeechStart = this.onSpeechStart;
         Voice.onSpeechRecognized = this.onSpeechRecognized;
@@ -107,6 +115,26 @@ class Transcribe extends Component<Props, State> {
         );
     }
 
+    getTranscriptionTextObjects() {
+            return (
+
+                <View style={styles.container}>
+                    <Text> server updates: </Text>
+                    {this.state.texts.map(text => {
+                        return (
+                        <text />
+                    )})}
+                    {this.state.partialResults.map((result, index) => {
+                         return (
+                           <Text key={`partial-result-${index}`} style={styles.stat}>
+                             {result}
+                           </Text>
+                         );
+                    })}
+                </View>
+            );
+        }
+
     getCurrentTranscription(callback: (setText: string) => void) {
             callback(this.state.partialResults[0]);
         }
@@ -158,10 +186,19 @@ class Transcribe extends Component<Props, State> {
         console.log('onSpeechResults: ', e);
         console.log('onSpeechResults partial results: ', this.state.partialResults[0]);
         this.state.partialResults = [];
-        this.state.previousText = this.state.previousText + '.\n' + e.value[0];
-        text = this.state.previousText;
+        this.state.previousText = this.state.previousText + '\n' + e.value[0];
+        text = text + '\n' + this.state.previousText;
+        seg = this.state.new_segment_time;
+        console.log("seg is: ", seg.toString());
+        props = {segment_time: seg, original_text: e.value[0]};
+        transcribed_text = new TranscribedText(props);
+//         let transcribed_text = new TranscribedText(seg.toString(), e.value[0]);
+        console.log("transc", transcribed_text.getOriginalText());
+        console.log("arr: ", this.state.texts.map(text => {
+                                                     return (text.getServerText())}));
+        this.state.texts = [...this.state.texts, transcribed_text];
 
-//         this.eventEmitter.emit('textUpdated', this.state.previousText);
+        this.eventEmitter.emit('textUpdated', e.value[0]);
         console.log("onSpeechResults: stopped: ", this.state.stopped);
         console.log("onSpeechResults: this.recognitionSwitchState: ", this.recognitionSwitchState);
         if (!this.state.stopped && this.recognitionSwitchState)
@@ -186,16 +223,21 @@ class Transcribe extends Component<Props, State> {
     //Transcription actions
     _startRecognizing = async () => {
         console.log("Start Called again");
+        const d = new Date();
+        let date = d.getUTCDate();
+        console.log("seg is: ", date);
         this.state = {
           recognized: '',
           pitch: '',
           error: '',
           started: '',
           results: '',
-          previousText: text,
+          previousText: '',
           partialResults: [],
           end: '',
-          stopped: false
+          stopped: false,
+          new_segment_time: date,
+          texts: this.state.texts
         };
         try {
           await Voice.start(_languageCode);
@@ -238,8 +280,10 @@ class Transcribe extends Component<Props, State> {
           started: '',
           partialResults: [],
           end: '',
-          previousText: text,
-          stopped: true
+          previousText: '',
+          stopped: true,
+          new_segment_time: '',
+          texts: this.state.texts
         };
     };
 }

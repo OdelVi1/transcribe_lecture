@@ -97,7 +97,7 @@ export class VoiceTest extends Component<Props, State> {
   };
 
   onSpeechResults = (e: SpeechResultsEvent) => {
-    console.log('onSpeechResults: ', e);
+    console.log('onSpeechResults: hhhhhhhhhhhhhhhhhhhhhhhh', e);
     this.setState({
       partialResults: [],
       previousText: this.state.previousText + ', ' + e.value[0],
