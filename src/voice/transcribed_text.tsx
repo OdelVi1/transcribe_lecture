@@ -41,7 +41,7 @@ export class TranscribedText extends Component<Props> {
                 body: JSON.stringify({
                     text: this.getOriginalText(),
                     segment_time: this.getSegmentTime(),
-                    course_id: 'xx'})
+                    course_id: 'yy'})
             };
             console.log("try to fetch server text");
             fetch('http://127.0.0.1:5000/best_version', options)
@@ -81,21 +81,21 @@ export class TranscribedText extends Component<Props> {
         });
     }
 
-    async componentDidMount() {
-        // POST request using fetch with async/await
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                            text: this.props.original_text,
-                            segment_time: this.props.segment_time,
-                            course_id: 'xx'})
-        };
-        const response = await fetch('http://10.0.0.7:5000/best_version', requestOptions);
-        const data = await response.json();
-        setServerText(data);
-        console.log("TranscribedText Text changed to ", this.props.server_text_text, this.props.segment_time);
-    }
+//     async componentDidMount() {
+//         // POST request using fetch with async/await
+//         const requestOptions = {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify({
+//                             text: this.props.original_text,
+//                             segment_time: this.props.segment_time,
+//                             course_id: 'xx'})
+//         };
+//         const response = await fetch('http://10.0.0.7:5000/best_version', requestOptions);
+//         const data = await response.json();
+//         setServerText(data);
+//         console.log("TranscribedText Text changed to ", this.props.server_text_text, this.props.segment_time);
+//     }
 
     render(){
         return(
